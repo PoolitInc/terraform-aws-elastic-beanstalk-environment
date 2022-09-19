@@ -1102,7 +1102,20 @@ data "aws_iam_policy_document" "elb_logs" {
     effect = "Allow"
   }
 }
-
+# Result #1 HIGH No public access block so not blocking public acls
+# TODO: aws-s3-block-public-acls
+# Result #2 HIGH No public access block so not blocking public policies
+# TODO: aws-s3-block-public-policy
+# Result #3 HIGH No public access block so not ignoring public acls
+# TODO: aws-s3-ignore-public-acls
+# Result #4 HIGH No public access block so not restricting public buckets
+# TODO: aws-s3-no-public-buckets
+# Result #5 HIGH Bucket does not encrypt data with a customer managed key.
+# TODO: aws-s3-encryption-customer-key
+# Result #6 MEDIUM Bucket does not have logging enabled
+# TODO: aws-s3-enable-bucket-logging
+# Result #7 LOW Bucket does not have a corresponding public access block.
+# TODO: aws-s3-specify-public-access-block
 resource "aws_s3_bucket" "elb_logs" {
   #bridgecrew:skip=BC_AWS_S3_13:Skipping `Enable S3 Bucket Logging` check until bridgecrew will support dynamic blocks (https://github.com/bridgecrewio/checkov/issues/776).
   #bridgecrew:skip=BC_AWS_S3_14:Skipping `Ensure all data stored in the S3 bucket is securely encrypted at rest` check until bridgecrew will support dynamic blocks (https://github.com/bridgecrewio/checkov/issues/776).
