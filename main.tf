@@ -1102,45 +1102,76 @@ data "aws_iam_policy_document" "elb_logs" {
     effect = "Allow"
   }
 }
-
+# The following are ignored because either (a) the discrepancies are intended or (b) these are covered in a block below.
+#tfsec:ignore:aws-s3-block-public-acls
+#tfsec:ignore:aws-s3-block-public-policy
+#tfsec:ignore:aws-s3-ignore-public-acls
+#tfsec:ignore:aws-s3-no-public-buckets
+#tfsec:ignore:aws-s3-enable-bucket-logging
+#tfsec:ignore:aws-s3-specify-public-access-block
+#tfsec:ignore:aws-s3-enable-bucket-logging
+#tfsec:ignore:aws-s3-encryption-customer-key
+#tfsec:ignore:aws-s3-enable-versioning
+#tfsec:ignore:aws-s3-enable-bucket-encryption
 resource "aws_s3_bucket" "elb_logs" {
-  #bridgecrew:skip=BC_AWS_S3_13:Skipping `Enable S3 Bucket Logging` check until bridgecrew will support dynamic blocks (https://github.com/bridgecrewio/checkov/issues/776).
-  #bridgecrew:skip=BC_AWS_S3_14:Skipping `Ensure all data stored in the S3 bucket is securely encrypted at rest` check until bridgecrew will support dynamic blocks (https://github.com/bridgecrewio/checkov/issues/776).
-  #bridgecrew:skip=CKV_AWS_52:Skipping `Ensure S3 bucket has MFA delete enabled` due to issue in terraform (https://github.com/hashicorp/terraform-provider-aws/issues/629).
-  #bridgecrew:skip=BC_AWS_S3_16:Skipping since adding count condition sounds like to trigger an error. (https://github.com/cloudposse/terraform-aws-elastic-beanstalk-environment/pull/182)
-  #bridgecrew:skip=BC_AWS_GENERAL_56:Skipping "Ensure S3 buckets are encrypted with KMS by default"
-  #bridgecrew:skip=BC_AWS_NETWORKING_52:Skipping "Ensure S3 Bucket has public access blocks"
-  #bridgecrew:skip=BC_AWS_GENERAL_72:Skipping "Ensure S3 bucket has cross-region replication enabled"
   count         = local.enabled && var.tier == "WebServer" && var.environment_type == "LoadBalanced" && var.loadbalancer_type != "network" && !var.loadbalancer_is_shared ? 1 : 0
   bucket        = "${module.this.id}-eb-loadbalancer-logs"
-  acl           = "private"
   force_destroy = var.force_destroy
-  policy        = join("", data.aws_iam_policy_document.elb_logs.*.json)
   tags          = module.this.tags
+}
 
-  dynamic "server_side_encryption_configuration" {
-    for_each = var.s3_bucket_encryption_enabled ? ["true"] : []
-
-    content {
-      rule {
-        apply_server_side_encryption_by_default {
-          sse_algorithm = "AES256"
-        }
-      }
+# Result #5 HIGH Bucket does not encrypt data with a customer managed key.
+# This is not a big deal for ELB logs, having an encryption with the default key should be enough for this.
+# tfsec:ignore:aws-s3-encryption-customer-key
+resource "aws_s3_bucket_server_side_encryption_configuration" "elb_logs" {
+  count  = var.s3_bucket_encryption_enabled ? 1 : 0
+  bucket = aws_s3_bucket.elb_logs.*.bucket
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
     }
   }
+}
 
-  versioning {
-    enabled = var.s3_bucket_versioning_enabled
+resource "aws_s3_bucket_versioning" "elb_logs" {
+  count  = local.enabled && var.tier == "WebServer" && var.environment_type == "LoadBalanced" && var.loadbalancer_type != "network" && !var.loadbalancer_is_shared ? 1 : 0
+  bucket = aws_s3_bucket.elb_logs.*.bucket
+  versioning_configuration {
+    status = var.s3_bucket_versioning_enabled ? "Enabled" : "Disabled"
   }
+}
 
-  dynamic "logging" {
-    for_each = var.s3_bucket_access_log_bucket_name != "" ? [1] : []
-    content {
-      target_bucket = var.s3_bucket_access_log_bucket_name
-      target_prefix = "logs/${module.this.id}/"
-    }
-  }
+resource "aws_s3_bucket_logging" "elb_logs" {
+  count = local.enabled && var.tier == "WebServer" && var.environment_type == "LoadBalanced" && var.loadbalancer_type != "network" && !var.loadbalancer_is_shared && var.s3_bucket_access_log_bucket_name != "" ? 1 : 0
+
+  bucket        = aws_s3_bucket.elb_logs.*.bucket
+  target_bucket = var.s3_bucket_access_log_bucket_name
+  target_prefix = "logs/${module.this.id}"
+}
+
+resource "aws_s3_bucket_public_access_block" "elb_logs" {
+  count = local.enabled && var.tier == "WebServer" && var.environment_type == "LoadBalanced" && var.loadbalancer_type != "network" && !var.loadbalancer_is_shared ? 1 : 0
+
+  bucket = aws_s3_bucket.elb_logs.*.bucket
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_acl" "elb_logs" {
+  count = local.enabled && var.tier == "WebServer" && var.environment_type == "LoadBalanced" && var.loadbalancer_type != "network" && !var.loadbalancer_is_shared ? 1 : 0
+
+  bucket = aws_s3_bucket.elb_logs.*.bucket
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_policy" "elb_logs" {
+  count = local.enabled && var.tier == "WebServer" && var.environment_type == "LoadBalanced" && var.loadbalancer_type != "network" && !var.loadbalancer_is_shared ? 1 : 0
+
+  bucket = aws_s3_bucket.elb_logs.*.bucket
+  policy = join("", data.aws_iam_policy_document.elb_logs.*.json)
 }
 
 module "dns_hostname" {
