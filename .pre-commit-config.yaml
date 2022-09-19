@@ -1,0 +1,17 @@
+repos:
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.75.0
+    hooks:
+      - id: terraform_fmt
+        name: Formatting (terraform fmt)
+      - id: terraform_tflint
+        name: Linting (tflint)
+      - id: terraform_validate
+        name: Validation (terraform validate)
+      - id: terraform_tfsec # soon
+        name: Static Analysis (tfsec)
+      - id: terraform_docs
+        name: Module documentation (terraform-docs)
+        args:
+        - --hook-config=--path-to-file=README.md
+
