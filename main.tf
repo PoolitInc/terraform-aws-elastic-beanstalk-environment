@@ -1125,7 +1125,7 @@ resource "aws_s3_bucket" "elb_logs" {
 # tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket_server_side_encryption_configuration" "elb_logs" {
   count  = var.s3_bucket_encryption_enabled ? 1 : 0
-  bucket = aws_s3_bucket.elb_logs.*.bucket
+  bucket = aws_s3_bucket.elb_logs[0].bucket
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
@@ -1135,7 +1135,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "elb_logs" {
 
 resource "aws_s3_bucket_versioning" "elb_logs" {
   count  = local.enabled && var.tier == "WebServer" && var.environment_type == "LoadBalanced" && var.loadbalancer_type != "network" && !var.loadbalancer_is_shared ? 1 : 0
-  bucket = aws_s3_bucket.elb_logs.*.bucket
+  bucket = aws_s3_bucket.elb_logs[0].bucket
   versioning_configuration {
     status = var.s3_bucket_versioning_enabled ? "Enabled" : "Disabled"
   }
@@ -1144,7 +1144,7 @@ resource "aws_s3_bucket_versioning" "elb_logs" {
 resource "aws_s3_bucket_logging" "elb_logs" {
   count = local.enabled && var.tier == "WebServer" && var.environment_type == "LoadBalanced" && var.loadbalancer_type != "network" && !var.loadbalancer_is_shared && var.s3_bucket_access_log_bucket_name != "" ? 1 : 0
 
-  bucket        = aws_s3_bucket.elb_logs.*.bucket
+  bucket        = aws_s3_bucket.elb_logs[0].bucket
   target_bucket = var.s3_bucket_access_log_bucket_name
   target_prefix = "logs/${module.this.id}"
 }
@@ -1152,7 +1152,7 @@ resource "aws_s3_bucket_logging" "elb_logs" {
 resource "aws_s3_bucket_public_access_block" "elb_logs" {
   count = local.enabled && var.tier == "WebServer" && var.environment_type == "LoadBalanced" && var.loadbalancer_type != "network" && !var.loadbalancer_is_shared ? 1 : 0
 
-  bucket = aws_s3_bucket.elb_logs.*.bucket
+  bucket = aws_s3_bucket.elb_logs[0].bucket
 
   block_public_acls       = true
   block_public_policy     = true
@@ -1163,14 +1163,14 @@ resource "aws_s3_bucket_public_access_block" "elb_logs" {
 resource "aws_s3_bucket_acl" "elb_logs" {
   count = local.enabled && var.tier == "WebServer" && var.environment_type == "LoadBalanced" && var.loadbalancer_type != "network" && !var.loadbalancer_is_shared ? 1 : 0
 
-  bucket = aws_s3_bucket.elb_logs.*.bucket
+  bucket = aws_s3_bucket.elb_logs[0].bucket
   acl    = "private"
 }
 
 resource "aws_s3_bucket_policy" "elb_logs" {
   count = local.enabled && var.tier == "WebServer" && var.environment_type == "LoadBalanced" && var.loadbalancer_type != "network" && !var.loadbalancer_is_shared ? 1 : 0
 
-  bucket = aws_s3_bucket.elb_logs.*.bucket
+  bucket = aws_s3_bucket.elb_logs[0].bucket
   policy = join("", data.aws_iam_policy_document.elb_logs.*.json)
 }
 
