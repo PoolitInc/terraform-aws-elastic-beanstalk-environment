@@ -222,14 +222,15 @@ module "key_pair_secret" {
 
 data "aws_elastic_beanstalk_solution_stack" "latest_docker" {
   most_recent = true
-  name_regex  = "^64bit Amazon Linux (.*) Multi-container Docker (.*)$"
+  # Ie. "64bit Amazon Linux 2 v3.4.19 running Docker"
+  name_regex = "^64bit Amazon Linux (.*) (.*) running Docker$"
 }
 
 # Create eb version
 #tfsec:ignore:aws-s3-enable-versioning
 module "elastic_beanstalk_environment" {
   source                             = "app.terraform.io/PoolitInc/elastic-beanstalk-environment/aws"
-  version                            = "0.47.0-security-4"
+  version                            = "0.47.0-security-5"
   region                             = var.aws_region
   name                               = local.name
   elastic_beanstalk_application_name = var.elastic_beanstalk_application_name
