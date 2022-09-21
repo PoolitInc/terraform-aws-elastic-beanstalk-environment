@@ -8,7 +8,7 @@ locals {
   application_port = "80"
   name             = "${var.application_name}-${var.stage}"
   name_sha         = sha256(local.name)
-  poolit_domain    = "poolit.com"
+  poolit_domain    = coalesce(var.route53_zone_name, "poolit.com")
   service_domain   = "api.${var.stage}"
 }
 

@@ -54,3 +54,9 @@ variable "web_instance_type" {
 variable "web_health_check_url" {
   type = string
 }
+
+variable "route53_zone_name" {
+  type        = string
+  description = "Route53 Zone Name"
+  default     = null
+}
