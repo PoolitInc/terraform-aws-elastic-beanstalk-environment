@@ -126,7 +126,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "docker_run_bucket
   bucket = aws_s3_bucket.docker_run_bucket.bucket
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "AES256"
+      sse_algorithm     = "aws:kms"
       kms_master_key_id = aws_kms_key.docker_bucket_kms.arn
     }
   }
@@ -220,15 +220,20 @@ module "key_pair_secret" {
   ]
 }
 
+data "aws_elastic_beanstalk_solution_stack" "latest_docker" {
+  most_recent = true
+  name_regex  = "^64bit Amazon Linux (.*) Multi-container Docker (.*)$"
+}
+
 # Create eb version
 #tfsec:ignore:aws-s3-enable-versioning
 module "elastic_beanstalk_environment" {
   source                             = "app.terraform.io/PoolitInc/elastic-beanstalk-environment/aws"
-  version                            = "0.47.0-security-3"
+  version                            = "0.47.0-security-4"
   region                             = var.aws_region
   name                               = local.name
   elastic_beanstalk_application_name = var.elastic_beanstalk_application_name
-  solution_stack_name                = "64bit Amazon Linux 2 v3.4.16 running Docker"
+  solution_stack_name                = data.aws_elastic_beanstalk_solution_stack.latest_docker.name
   environment_type                   = "LoadBalanced"
   loadbalancer_type                  = "application"
   tier                               = "WebServer"
