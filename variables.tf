@@ -8,7 +8,12 @@ variable "aws_region" {
   type = string
 }
 variable "stage" {
-  type = string
+  type        = string
+  description = "Stage to which the stack belongs"
+}
+variable "stage_prefix" {
+  type        = string
+  description = "Stage prefix to provision resources"
 }
 variable "vpc_id" {
   type = string

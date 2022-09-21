@@ -28,7 +28,7 @@ No requirements.
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_acm"></a> [acm](#module\_acm) | terraform-aws-modules/acm/aws | 4.0.1 |
-| <a name="module_elastic_beanstalk_environment"></a> [elastic\_beanstalk\_environment](#module\_elastic\_beanstalk\_environment) | app.terraform.io/PoolitInc/elastic-beanstalk-environment/aws | 0.47.0-security-2 |
+| <a name="module_elastic_beanstalk_environment"></a> [elastic\_beanstalk\_environment](#module\_elastic\_beanstalk\_environment) | app.terraform.io/PoolitInc/elastic-beanstalk-environment/aws | 0.47.0-security-3 |
 | <a name="module_key_pair"></a> [key\_pair](#module\_key\_pair) | terraform-aws-modules/key-pair/aws | 1.0.1 |
 | <a name="module_key_pair_secret"></a> [key\_pair\_secret](#module\_key\_pair\_secret) | cloudposse/ssm-parameter-store/aws | 0.9.1 |
 
@@ -67,7 +67,8 @@ No requirements.
 | <a name="input_private_subnet_ids"></a> [private\_subnet\_ids](#input\_private\_subnet\_ids) | n/a | `list(string)` | n/a | yes |
 | <a name="input_public_subnet_ids"></a> [public\_subnet\_ids](#input\_public\_subnet\_ids) | n/a | `list(string)` | n/a | yes |
 | <a name="input_route53_zone_name"></a> [route53\_zone\_name](#input\_route53\_zone\_name) | Route53 Zone Name | `string` | `null` | no |
-| <a name="input_stage"></a> [stage](#input\_stage) | n/a | `string` | n/a | yes |
+| <a name="input_stage"></a> [stage](#input\_stage) | Stage to which the stack belongs | `string` | n/a | yes |
+| <a name="input_stage_prefix"></a> [stage\_prefix](#input\_stage\_prefix) | Stage prefix to provision resources | `string` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | n/a | `string` | n/a | yes |
 | <a name="input_web_command"></a> [web\_command](#input\_web\_command) | n/a | `string` | n/a | yes |
 | <a name="input_web_container_port"></a> [web\_container\_port](#input\_web\_container\_port) | n/a | `string` | n/a | yes |

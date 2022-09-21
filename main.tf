@@ -2,14 +2,12 @@ locals {
   docker_run_config_sha = sha256(local_sensitive_file.docker_run_config.content)
   data_dog_agent_port   = "8126"
   secrets_container     = var.aws_secret_manager_name
-  creds = jsondecode(
-  data.aws_secretsmanager_secret_version.poolit_secret_instance.secret_string)
-  service_image    = "${var.ecr_repository_url}:${var.stage}-${var.ecr_repository_tag}"
-  application_port = "80"
-  name             = "${var.application_name}-${var.stage}"
-  name_sha         = sha256(local.name)
-  poolit_domain    = coalesce(var.route53_zone_name, "poolit.com")
-  service_domain   = "api.${var.stage}"
+  creds                 = jsondecode(data.aws_secretsmanager_secret_version.poolit_secret_instance.secret_string)
+  service_image         = "${var.ecr_repository_url}:${var.stage}-${var.ecr_repository_tag}"
+  application_port      = "80"
+  name                  = "${var.stage_prefix}-${var.application_name}"
+  poolit_domain         = coalesce(var.route53_zone_name, "poolit.com")
+  service_domain        = "api.${var.stage_prefix}"
 }
 
 resource "local_sensitive_file" "docker_run_config" {
@@ -120,7 +118,7 @@ module "acm" {
 #tfsec:ignore:aws-s3-enable-versioning      # No need for versioning.
 #tfsec:ignore:aws-s3-enable-bucket-logging  # No need for bucket logging.
 resource "aws_s3_bucket" "docker_run_bucket" {
-  bucket        = "poolit-${var.stage}-docker-run-bucket"
+  bucket        = "${var.stage_prefix}-poolit-docker-run-bucket"
   force_destroy = true
 }
 
@@ -174,7 +172,7 @@ resource "tls_private_key" "this" {
 module "key_pair" {
   source     = "terraform-aws-modules/key-pair/aws"
   version    = "1.0.1"
-  key_name   = "/poolit/${var.stage}/ebs-key-pair"
+  key_name   = "/poolit/${var.stage_prefix}/ebs-key-pair"
   public_key = tls_private_key.this.public_key_openssh
 }
 
@@ -185,35 +183,35 @@ module "key_pair_secret" {
 
   parameter_write = [
     {
-      name        = "/poolit/${var.stage}/app/elb/key_pair_public_key"
+      name        = "/poolit/${var.stage_prefix}/app/elb/key_pair_public_key"
       value       = tls_private_key.this.public_key_openssh
       type        = "String"
       overwrite   = "true"
       description = "Elastic beanstalk ssh public key"
     },
     {
-      name        = "/poolit/${var.stage}/app/elb/key_pair_private_key_pem"
+      name        = "/poolit/${var.stage_prefix}/app/elb/key_pair_private_key_pem"
       value       = tls_private_key.this.private_key_pem
       type        = "String"
       overwrite   = "true"
       description = "Elastic beanstalk ssh private key"
     },
     {
-      name        = "/poolit/${var.stage}/app/elb/database_url"
+      name        = "/poolit/${var.stage_prefix}/app/elb/database_url"
       value       = var.db_endpoint
       type        = "String"
       overwrite   = "true"
       description = "Database endpoint"
     },
     {
-      name        = "/poolit/${var.stage}/app/elb/database_username"
+      name        = "/poolit/${var.stage_prefix}/app/elb/database_username"
       value       = var.db_user_name
       type        = "String"
       overwrite   = "true"
       description = "Database username"
     },
     {
-      name        = "/poolit/${var.stage}/app/elb/database_password"
+      name        = "/poolit/${var.stage_prefix}/app/elb/database_password"
       value       = var.db_user_password
       type        = "String"
       overwrite   = "true"
@@ -226,7 +224,7 @@ module "key_pair_secret" {
 #tfsec:ignore:aws-s3-enable-versioning
 module "elastic_beanstalk_environment" {
   source                             = "app.terraform.io/PoolitInc/elastic-beanstalk-environment/aws"
-  version                            = "0.47.0-security-2"
+  version                            = "0.47.0-security-3"
   region                             = var.aws_region
   name                               = local.name
   elastic_beanstalk_application_name = var.elastic_beanstalk_application_name
