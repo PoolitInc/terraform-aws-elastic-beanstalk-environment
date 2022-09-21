@@ -127,7 +127,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "docker_run_bucket
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm     = "AES256"
-      kms_master_key_id = aws_kms_key.docker_bucket_kms.key_id
+      kms_master_key_id = aws_kms_key.docker_bucket_kms.arn
     }
   }
 }
@@ -162,7 +162,7 @@ resource "aws_s3_object" "docker_run_object" {
   bucket                 = aws_s3_bucket.docker_run_bucket.id
   source                 = data.archive_file.docker_run.output_path
   server_side_encryption = "AES256"
-  kms_key_id             = aws_kms_key.docker_bucket_kms.key_id
+  kms_key_id             = aws_kms_key.docker_bucket_kms.arn
 }
 
 resource "tls_private_key" "this" {
