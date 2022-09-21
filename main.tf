@@ -7,7 +7,7 @@ locals {
   application_port      = "80"
   name                  = "${var.stage_prefix}-${var.application_name}"
   poolit_domain         = coalesce(var.route53_zone_name, "poolit.com")
-  service_domain        = "api.${var.stage_prefix}"
+  service_domain        = "api"
 }
 
 resource "local_sensitive_file" "docker_run_config" {
