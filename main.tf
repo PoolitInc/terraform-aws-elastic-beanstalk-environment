@@ -1115,7 +1115,7 @@ data "aws_iam_policy_document" "elb_logs" {
 #tfsec:ignore:aws-s3-enable-bucket-encryption
 resource "aws_s3_bucket" "elb_logs" {
   count         = local.enabled && var.tier == "WebServer" && var.environment_type == "LoadBalanced" && var.loadbalancer_type != "network" && !var.loadbalancer_is_shared ? 1 : 0
-  bucket        = "${module.this.id}-eb-loadbalancer-logs"
+  bucket_prefix = "${module.this.id}-eb-lb-"
   force_destroy = var.force_destroy
   tags          = module.this.tags
 }
