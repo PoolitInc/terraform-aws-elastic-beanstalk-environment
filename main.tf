@@ -147,6 +147,11 @@ resource "aws_kms_key" "docker_bucket_kms" {
   enable_key_rotation = true
 }
 
+resource "aws_kms_alias" "docker_bucket_kms_key_alias" {
+  name          = "${var.stage_prefix}-poolit-docker-run-bucket-key"
+  target_key_id = aws_kms_key.docker_bucket_kms.key_id
+}
+
 resource "aws_s3_bucket_public_access_block" "docker_run_bucket" {
   bucket = aws_s3_bucket.docker_run_bucket.bucket
 
@@ -161,7 +166,7 @@ resource "aws_s3_object" "docker_run_object" {
   key                    = "${local.docker_run_config_sha}.zip"
   bucket                 = aws_s3_bucket.docker_run_bucket.id
   source                 = data.archive_file.docker_run.output_path
-  server_side_encryption = "AES256"
+  server_side_encryption = "aws:kms"
   kms_key_id             = aws_kms_key.docker_bucket_kms.arn
 }
 
@@ -252,7 +257,7 @@ module "elastic_beanstalk_environment" {
   s3_bucket_versioning_enabled       = false
   extended_ec2_policy_document       = data.aws_iam_policy_document.minimal_s3_permissions.json
   ssh_listener_enabled               = true
-  associate_public_ip_address        = true
+  associate_public_ip_address        = false
   deployment_ignore_health_check     = false
   dns_subdomain                      = local.service_domain
   dns_zone_id                        = data.aws_route53_zone.poolit_zone.zone_id
