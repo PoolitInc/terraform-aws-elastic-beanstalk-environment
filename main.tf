@@ -148,7 +148,7 @@ resource "aws_kms_key" "docker_bucket_kms" {
 }
 
 resource "aws_kms_alias" "docker_bucket_kms_key_alias" {
-  name          = "${var.stage_prefix}-poolit-docker-run-bucket-key"
+  name          = "alias/${var.stage_prefix}-poolit-docker-run-bucket-key"
   target_key_id = aws_kms_key.docker_bucket_kms.key_id
 }
 
