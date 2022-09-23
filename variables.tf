@@ -569,3 +569,13 @@ variable "enable_capacity_rebalancing" {
   default     = false
   description = "Specifies whether to enable the Capacity Rebalancing feature for Spot Instances in your Auto Scaling Group"
 }
+
+variable "aws_account_id" {
+  type        = string
+  description = "AWS Account ID where resources are located"
+}
+
+variable "secrets_manager_kms_key_arn" {
+  type        = string
+  description = "KMS Key ARN used to decrypt secrets"
+}
