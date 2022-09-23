@@ -96,7 +96,7 @@ resource "aws_iam_role_policy_attachment" "elastic_beanstalk_multi_container_doc
 resource "aws_iam_role" "ec2" {
   count = local.enabled ? 1 : 0
 
-  name               = "${module.this.id}-eb-ec2"
+  name               = "${module.this.id}-${data.aws_region.current.name}-eb-ec2"
   assume_role_policy = join("", data.aws_iam_policy_document.ec2.*.json)
   tags               = module.this.tags
 }
@@ -104,7 +104,7 @@ resource "aws_iam_role" "ec2" {
 resource "aws_iam_role_policy" "default" {
   count = local.enabled ? 1 : 0
 
-  name   = "${module.this.id}-eb-default"
+  name   = "${module.this.id}-${data.aws_region.current.name}-eb-default"
   role   = join("", aws_iam_role.ec2.*.id)
   policy = join("", data.aws_iam_policy_document.extended.*.json)
 }
@@ -163,6 +163,9 @@ resource "aws_ssm_activation" "ec2" {
   tags               = module.this.tags
 }
 
+
+data "aws_region" "current" {}
+
 data "aws_iam_policy_document" "default" {
   count = local.enabled ? 1 : 0
 
@@ -188,6 +191,15 @@ data "aws_iam_policy_document" "default" {
     resources = ["*"]
 
     effect = "Allow"
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "kms:Decrypt",
+      "kms:GenerateDataKey"
+    ]
+    resources = [var.secrets_manager_kms_key_arn]
   }
 
   statement {
