@@ -28,7 +28,7 @@ No requirements.
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_acm"></a> [acm](#module\_acm) | terraform-aws-modules/acm/aws | 4.0.1 |
-| <a name="module_elastic_beanstalk_environment"></a> [elastic\_beanstalk\_environment](#module\_elastic\_beanstalk\_environment) | app.terraform.io/PoolitInc/elastic-beanstalk-environment/aws | 0.47.0-security-5 |
+| <a name="module_elastic_beanstalk_environment"></a> [elastic\_beanstalk\_environment](#module\_elastic\_beanstalk\_environment) | app.terraform.io/PoolitInc/elastic-beanstalk-environment/aws | 0.47.0-security-6 |
 | <a name="module_key_pair"></a> [key\_pair](#module\_key\_pair) | terraform-aws-modules/key-pair/aws | 1.0.1 |
 | <a name="module_key_pair_secret"></a> [key\_pair\_secret](#module\_key\_pair\_secret) | cloudposse/ssm-parameter-store/aws | 0.9.1 |
 
@@ -58,6 +58,7 @@ No requirements.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_application_name"></a> [application\_name](#input\_application\_name) | n/a | `string` | n/a | yes |
+| <a name="input_aws_account_id"></a> [aws\_account\_id](#input\_aws\_account\_id) | AWS Account ID where resources will be created | `string` | n/a | yes |
 | <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | n/a | `string` | n/a | yes |
 | <a name="input_aws_secret_manager_name"></a> [aws\_secret\_manager\_name](#input\_aws\_secret\_manager\_name) | n/a | `string` | n/a | yes |
 | <a name="input_db_endpoint"></a> [db\_endpoint](#input\_db\_endpoint) | n/a | `string` | n/a | yes |
@@ -69,6 +70,7 @@ No requirements.
 | <a name="input_private_subnet_ids"></a> [private\_subnet\_ids](#input\_private\_subnet\_ids) | n/a | `list(string)` | n/a | yes |
 | <a name="input_public_subnet_ids"></a> [public\_subnet\_ids](#input\_public\_subnet\_ids) | n/a | `list(string)` | n/a | yes |
 | <a name="input_route53_zone_name"></a> [route53\_zone\_name](#input\_route53\_zone\_name) | Route53 Zone Name | `string` | `null` | no |
+| <a name="input_secrets_manager_kms_key_arn"></a> [secrets\_manager\_kms\_key\_arn](#input\_secrets\_manager\_kms\_key\_arn) | KMS Key ARN used to encrypt secrets in Secrets Manager | `string` | n/a | yes |
 | <a name="input_stage"></a> [stage](#input\_stage) | Stage to which the stack belongs | `string` | n/a | yes |
 | <a name="input_stage_prefix"></a> [stage\_prefix](#input\_stage\_prefix) | Stage prefix to provision resources | `string` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | n/a | `string` | n/a | yes |

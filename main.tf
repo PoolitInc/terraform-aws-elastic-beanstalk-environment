@@ -235,7 +235,7 @@ data "aws_elastic_beanstalk_solution_stack" "latest_docker" {
 #tfsec:ignore:aws-s3-enable-versioning
 module "elastic_beanstalk_environment" {
   source                             = "app.terraform.io/PoolitInc/elastic-beanstalk-environment/aws"
-  version                            = "0.47.0-security-5"
+  version                            = "0.47.0-security-6"
   region                             = var.aws_region
   name                               = local.name
   elastic_beanstalk_application_name = var.elastic_beanstalk_application_name
@@ -263,6 +263,8 @@ module "elastic_beanstalk_environment" {
   dns_zone_id                        = data.aws_route53_zone.poolit_zone.zone_id
   loadbalancer_certificate_arn       = module.acm.acm_certificate_arn
   loadbalancer_ssl_policy            = "ELBSecurityPolicy-FS-2018-06"
+  aws_account_id                     = var.aws_account_id
+  secrets_manager_kms_key_arn        = var.secrets_manager_kms_key_arn
   #https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
   depends_on = [
     module.key_pair

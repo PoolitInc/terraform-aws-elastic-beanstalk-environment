@@ -65,3 +65,13 @@ variable "route53_zone_name" {
   description = "Route53 Zone Name"
   default     = null
 }
+
+variable "aws_account_id" {
+  type        = string
+  description = "AWS Account ID where resources will be created"
+}
+
+variable "secrets_manager_kms_key_arn" {
+  type        = string
+  description = "KMS Key ARN used to encrypt secrets in Secrets Manager"
+}
