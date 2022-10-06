@@ -75,3 +75,9 @@ variable "secrets_manager_kms_key_arn" {
   type        = string
   description = "KMS Key ARN used to encrypt secrets in Secrets Manager"
 }
+
+variable "ami_id" {
+  type        = string
+  description = "The AMI ID to run the elastic beanstalk nodes, leave empty for default"
+  default     = null
+}

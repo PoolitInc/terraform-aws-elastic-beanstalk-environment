@@ -8,6 +8,7 @@ locals {
   name                  = "${var.stage_prefix}-${var.application_name}"
   poolit_domain         = coalesce(var.route53_zone_name, "poolit.com")
   service_domain        = "api"
+  ami_id                = var.ami_id != null ? var.ami_id : null
 }
 
 resource "local_sensitive_file" "docker_run_config" {
@@ -265,6 +266,7 @@ module "elastic_beanstalk_environment" {
   loadbalancer_ssl_policy            = "ELBSecurityPolicy-FS-2018-06"
   aws_account_id                     = var.aws_account_id
   secrets_manager_kms_key_arn        = var.secrets_manager_kms_key_arn
+  ami_id                             = local.ami_id
   #https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
   depends_on = [
     module.key_pair
