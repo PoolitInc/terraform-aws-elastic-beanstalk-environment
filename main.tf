@@ -19,13 +19,15 @@ resource "local_sensitive_file" "docker_run_config" {
         image   = local.service_image
         command = var.web_command
         environment = merge({
-          DATABASE_HOST       = var.db_endpoint
-          SECRET_NAME         = local.secrets_container
-          DD_SERVICE          = "${var.application_name}-${var.stage}"
-          DD_ENV              = var.stage
-          DD_AGENT_HOST       = "agent"
-          DD_TRACE_AGENT_PORT = local.data_dog_agent_port
-          DD_LOGS_INJECTION   = "true"
+          DATABASE_HOST           = var.db_endpoint
+          SECRET_NAME             = local.secrets_container
+          DD_SERVICE              = "${var.application_name}-${var.stage}"
+          DD_ENV                  = var.stage
+          DD_AGENT_HOST           = "agent"
+          DD_TRACE_AGENT_PORT     = local.data_dog_agent_port
+          DD_LOGS_INJECTION       = "true",
+          DD_APPSEC_ENABLED       = "true",
+          DD_APM_IGNORE_RESOURCES = "GET /api/v1/health"
           }, var.web_environment_variables, nonsensitive(local.creds),
           {
             DATABASE_PASSWORD = nonsensitive(var.db_user_password)
@@ -267,6 +269,9 @@ module "elastic_beanstalk_environment" {
   aws_account_id                     = var.aws_account_id
   secrets_manager_kms_key_arn        = var.secrets_manager_kms_key_arn
   ami_id                             = local.ami_id
+  tags = {
+    Environment = var.stage
+  }
   #https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
   depends_on = [
     module.key_pair
