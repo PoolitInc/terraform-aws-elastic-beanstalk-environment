@@ -579,3 +579,8 @@ variable "secrets_manager_kms_key_arn" {
   type        = string
   description = "KMS Key ARN used to decrypt secrets"
 }
+
+variable "resource_prefix" {
+  type        = string
+  description = "The prefix used to create resources"
+}
