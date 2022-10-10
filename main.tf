@@ -238,7 +238,7 @@ data "aws_elastic_beanstalk_solution_stack" "latest_docker" {
 #tfsec:ignore:aws-s3-enable-versioning
 module "elastic_beanstalk_environment" {
   source                             = "app.terraform.io/PoolitInc/elastic-beanstalk-environment/aws"
-  version                            = "0.47.0-security-6"
+  version                            = "0.47.0-security-8"
   region                             = var.aws_region
   name                               = local.name
   elastic_beanstalk_application_name = var.elastic_beanstalk_application_name
@@ -269,6 +269,7 @@ module "elastic_beanstalk_environment" {
   aws_account_id                     = var.aws_account_id
   secrets_manager_kms_key_arn        = var.secrets_manager_kms_key_arn
   ami_id                             = local.ami_id
+  waf_acl_arn                        = var.waf_enabled ? var.waf_acl_arn != null ? var.waf_acl_arn : null : null
   tags = {
     Environment = var.stage
   }

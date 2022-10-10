@@ -81,3 +81,15 @@ variable "ami_id" {
   description = "The AMI ID to run the elastic beanstalk nodes, leave empty for default"
   default     = null
 }
+
+variable "waf_enabled" {
+  type        = bool
+  description = "Whether WAF is enabled for this deployment"
+  default     = false
+}
+
+variable "waf_acl_arn" {
+  type        = string
+  description = "The ARN of the WAF ACL to use if waf_enabled is set to true"
+  default     = null
+}

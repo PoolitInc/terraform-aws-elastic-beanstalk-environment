@@ -28,7 +28,7 @@ No requirements.
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_acm"></a> [acm](#module\_acm) | terraform-aws-modules/acm/aws | 4.0.1 |
-| <a name="module_elastic_beanstalk_environment"></a> [elastic\_beanstalk\_environment](#module\_elastic\_beanstalk\_environment) | app.terraform.io/PoolitInc/elastic-beanstalk-environment/aws | 0.47.0-security-6 |
+| <a name="module_elastic_beanstalk_environment"></a> [elastic\_beanstalk\_environment](#module\_elastic\_beanstalk\_environment) | app.terraform.io/PoolitInc/elastic-beanstalk-environment/aws | 0.47.0-security-8 |
 | <a name="module_key_pair"></a> [key\_pair](#module\_key\_pair) | terraform-aws-modules/key-pair/aws | 1.0.1 |
 | <a name="module_key_pair_secret"></a> [key\_pair\_secret](#module\_key\_pair\_secret) | cloudposse/ssm-parameter-store/aws | 0.9.1 |
 
@@ -75,6 +75,8 @@ No requirements.
 | <a name="input_stage"></a> [stage](#input\_stage) | Stage to which the stack belongs | `string` | n/a | yes |
 | <a name="input_stage_prefix"></a> [stage\_prefix](#input\_stage\_prefix) | Stage prefix to provision resources | `string` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | n/a | `string` | n/a | yes |
+| <a name="input_waf_acl_arn"></a> [waf\_acl\_arn](#input\_waf\_acl\_arn) | The ARN of the WAF ACL to use if waf\_enabled is set to true | `string` | `null` | no |
+| <a name="input_waf_enabled"></a> [waf\_enabled](#input\_waf\_enabled) | Whether WAF is enabled for this deployment | `bool` | `false` | no |
 | <a name="input_web_command"></a> [web\_command](#input\_web\_command) | n/a | `string` | n/a | yes |
 | <a name="input_web_container_port"></a> [web\_container\_port](#input\_web\_container\_port) | n/a | `string` | n/a | yes |
 | <a name="input_web_environment_variables"></a> [web\_environment\_variables](#input\_web\_environment\_variables) | n/a | `map(any)` | n/a | yes |
