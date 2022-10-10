@@ -1199,14 +1199,8 @@ module "dns_hostname" {
   context = module.this.context
 }
 
-data "aws_wafv2_web_acl" "regional_acl" {
-  name  = "${var.resource_prefix}-regional-acl"
-  scope = "REGIONAL"
-}
-
 resource "aws_wafv2_web_acl_association" "example" {
-
-  for_each     = local.enabled ? [for lb in toset(aws_elastic_beanstalk_environment.default[0].load_balancers) : lb] : []
+  for_each     = var.waf_acl_arn != null && local.enabled ? [for lb in toset(aws_elastic_beanstalk_environment.default[0].load_balancers) : lb] : []
   resource_arn = each.key
-  web_acl_arn  = data.aws_wafv2_web_acl.regional_acl.arn
+  web_acl_arn  = var.waf_acl_arn
 }
