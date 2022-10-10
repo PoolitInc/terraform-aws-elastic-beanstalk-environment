@@ -580,7 +580,8 @@ variable "secrets_manager_kms_key_arn" {
   description = "KMS Key ARN used to decrypt secrets"
 }
 
-variable "resource_prefix" {
+variable "waf_acl_arn" {
   type        = string
-  description = "The prefix used to create resources"
+  default     = null
+  description = "The ARN of the WAF ACL to attach to the LB in the environment"
 }
