@@ -27,6 +27,12 @@ variable "private_subnet_ids" {
 variable "aws_secret_manager_name" {
   type = string
 }
+variable "temporal_cert_secret_name" {
+  type = string
+}
+variable "temporal_key_secret_name" {
+  type = string
+}
 variable "db_endpoint" {
   type = string
 }
@@ -57,6 +63,9 @@ variable "web_instance_type" {
   type = string
 }
 variable "web_health_check_url" {
+  type = string
+}
+variable "temporal_worker_command" {
   type = string
 }
 

@@ -19,7 +19,7 @@ No requirements.
 | Name | Version |
 |------|---------|
 | <a name="provider_archive"></a> [archive](#provider\_archive) | 2.2.0 |
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.31.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.34.0 |
 | <a name="provider_local"></a> [local](#provider\_local) | 2.2.3 |
 | <a name="provider_tls"></a> [tls](#provider\_tls) | 4.0.3 |
 
@@ -51,7 +51,11 @@ No requirements.
 | [aws_iam_policy_document.minimal_s3_permissions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_route53_zone.poolit_zone](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
 | [aws_secretsmanager_secret.poolit_secrets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret) | data source |
+| [aws_secretsmanager_secret.temporal_cert_secret](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret) | data source |
+| [aws_secretsmanager_secret.temporal_key_secret](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret) | data source |
 | [aws_secretsmanager_secret_version.poolit_secret_instance](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret_version) | data source |
+| [aws_secretsmanager_secret_version.temporal_cert_secret_instance](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret_version) | data source |
+| [aws_secretsmanager_secret_version.temporal_key_secret_instance](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret_version) | data source |
 
 ## Inputs
 
@@ -74,6 +78,9 @@ No requirements.
 | <a name="input_secrets_manager_kms_key_arn"></a> [secrets\_manager\_kms\_key\_arn](#input\_secrets\_manager\_kms\_key\_arn) | KMS Key ARN used to encrypt secrets in Secrets Manager | `string` | n/a | yes |
 | <a name="input_stage"></a> [stage](#input\_stage) | Stage to which the stack belongs | `string` | n/a | yes |
 | <a name="input_stage_prefix"></a> [stage\_prefix](#input\_stage\_prefix) | Stage prefix to provision resources | `string` | n/a | yes |
+| <a name="input_temporal_cert_secret_name"></a> [temporal\_cert\_secret\_name](#input\_temporal\_cert\_secret\_name) | n/a | `string` | n/a | yes |
+| <a name="input_temporal_key_secret_name"></a> [temporal\_key\_secret\_name](#input\_temporal\_key\_secret\_name) | n/a | `string` | n/a | yes |
+| <a name="input_temporal_worker_command"></a> [temporal\_worker\_command](#input\_temporal\_worker\_command) | n/a | `string` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | n/a | `string` | n/a | yes |
 | <a name="input_waf_acl_arn"></a> [waf\_acl\_arn](#input\_waf\_acl\_arn) | The ARN of the WAF ACL to use if waf\_enabled is set to true | `string` | `null` | no |
 | <a name="input_waf_enabled"></a> [waf\_enabled](#input\_waf\_enabled) | Whether WAF is enabled for this deployment | `bool` | `false` | no |

@@ -1,14 +1,18 @@
 locals {
-  docker_run_config_sha = sha256(local_sensitive_file.docker_run_config.content)
-  data_dog_agent_port   = "8126"
-  secrets_container     = var.aws_secret_manager_name
-  creds                 = jsondecode(data.aws_secretsmanager_secret_version.poolit_secret_instance.secret_string)
-  service_image         = "${var.ecr_repository_url}:${var.stage}-${var.ecr_repository_tag}"
-  application_port      = "80"
-  name                  = "${var.stage_prefix}-${var.application_name}"
-  poolit_domain         = coalesce(var.route53_zone_name, "poolit.com")
-  service_domain        = "api"
-  ami_id                = var.ami_id != null ? var.ami_id : null
+  docker_run_config_sha          = sha256(local_sensitive_file.docker_run_config.content)
+  data_dog_agent_port            = "8126"
+  secrets_container              = var.aws_secret_manager_name
+  creds                          = jsondecode(data.aws_secretsmanager_secret_version.poolit_secret_instance.secret_string)
+  service_image                  = "${var.ecr_repository_url}:${var.stage}-${var.ecr_repository_tag}"
+  application_port               = "80"
+  name                           = "${var.stage_prefix}-${var.application_name}"
+  poolit_domain                  = coalesce(var.route53_zone_name, "poolit.com")
+  service_domain                 = "api"
+  ami_id                         = var.ami_id != null ? var.ami_id : null
+  temporal_key_secret_container  = var.temporal_cert_secret_name
+  temporal_key_secret            = data.aws_secretsmanager_secret_version.temporal_key_secret_instance.secret_binary
+  temporal_cert_secret_container = var.temporal_key_secret_name
+  temporal_cert_secret           = data.aws_secretsmanager_secret_version.temporal_cert_secret_instance.secret_binary
 }
 
 resource "local_sensitive_file" "docker_run_config" {
@@ -63,6 +67,34 @@ resource "local_sensitive_file" "docker_run_config" {
           DD_CONTAINER_EXCLUDE_LOGS            = "name:agent"
         }
       }
+      temporal_worker = {
+        image   = local.service_image
+        command = var.temporal_worker_command
+        environment = merge({
+          DATABASE_HOST       = var.db_endpoint
+          SECRET_NAME         = local.secrets_container
+          DD_SERVICE          = "temporal-worker-${var.application_name}-${var.stage}"
+          DD_ENV              = var.stage
+          DD_AGENT_HOST       = "agent"
+          DD_TRACE_AGENT_PORT = local.data_dog_agent_port
+          DD_LOGS_INJECTION   = "true",
+          DD_APPSEC_ENABLED   = "true",
+          },
+          var.web_environment_variables,
+          nonsensitive(local.creds),
+          {
+            TEMPORAL_MTLS_CERT        = nonsensitive(local.temporal_cert_secret)
+            TEMPORAL_MTLS_PRIVATE_KEY = nonsensitive(local.temporal_key_secret)
+          },
+          {
+            DATABASE_PASSWORD = nonsensitive(var.db_user_password)
+            DATABASE_USERNAME = nonsensitive(var.db_user_name)
+          }
+        )
+        labels = {
+          "com.datadoghq.ad.logs" = "[{\"source\": \"python\", \"service\": \"temporal-worker\"}]"
+        }
+      }
     }
   })
   filename = "${path.module}/docker-compose.yml"
@@ -93,6 +125,22 @@ data "aws_secretsmanager_secret" "poolit_secrets" {
 
 data "aws_secretsmanager_secret_version" "poolit_secret_instance" {
   secret_id = data.aws_secretsmanager_secret.poolit_secrets.id
+}
+
+data "aws_secretsmanager_secret" "temporal_cert_secret" {
+  name = local.temporal_cert_secret_container
+}
+
+data "aws_secretsmanager_secret_version" "temporal_cert_secret_instance" {
+  secret_id = data.aws_secretsmanager_secret.temporal_cert_secret.id
+}
+
+data "aws_secretsmanager_secret" "temporal_key_secret" {
+  name = local.temporal_key_secret_container
+}
+
+data "aws_secretsmanager_secret_version" "temporal_key_secret_instance" {
+  secret_id = data.aws_secretsmanager_secret.temporal_key_secret.id
 }
 
 data "aws_route53_zone" "poolit_zone" {
