@@ -238,7 +238,7 @@ data "aws_elastic_beanstalk_solution_stack" "latest_docker" {
 #tfsec:ignore:aws-s3-enable-versioning
 module "elastic_beanstalk_environment" {
   source                             = "app.terraform.io/PoolitInc/elastic-beanstalk-environment/aws"
-  version                            = "0.47.0-security-8"
+  version                            = "0.47.0-security-9"
   region                             = var.aws_region
   name                               = local.name
   elastic_beanstalk_application_name = var.elastic_beanstalk_application_name

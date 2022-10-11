@@ -28,7 +28,7 @@ No requirements.
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_acm"></a> [acm](#module\_acm) | terraform-aws-modules/acm/aws | 4.0.1 |
-| <a name="module_elastic_beanstalk_environment"></a> [elastic\_beanstalk\_environment](#module\_elastic\_beanstalk\_environment) | app.terraform.io/PoolitInc/elastic-beanstalk-environment/aws | 0.47.0-security-8 |
+| <a name="module_elastic_beanstalk_environment"></a> [elastic\_beanstalk\_environment](#module\_elastic\_beanstalk\_environment) | app.terraform.io/PoolitInc/elastic-beanstalk-environment/aws | 0.47.0-security-9 |
 | <a name="module_key_pair"></a> [key\_pair](#module\_key\_pair) | terraform-aws-modules/key-pair/aws | 1.0.1 |
 | <a name="module_key_pair_secret"></a> [key\_pair\_secret](#module\_key\_pair\_secret) | cloudposse/ssm-parameter-store/aws | 0.9.1 |
 
